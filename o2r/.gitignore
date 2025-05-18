@@ -1,4 +1,5 @@
 o2r/__pycache__/
+__pycache__/
 *.vld
 *.csv
 *.rt
