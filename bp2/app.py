@@ -163,12 +163,22 @@ async def run(address: str):
         await client.stop_notify(NOTIFY_CHAR_UUID)
 
 async def main():
-    devices = await BleakScanner.discover(timeout=5.0)
-    for d in devices:
-        if d.name and "BP2" in d.name:
-            print("Connecting to", d.address)
-            await run(d.address)
-            break
+    # devices = await BleakScanner.discover(timeout=10)
+    # for d in devices:
+        # if d.name and "BP2" in d.name:
+            # print("Connecting to", d.address)
+            # await run(d.address)
+            # break
+    # scan for up to 20 seconds
+    print("Scanning for BP2 devices (20 s timeout)…")
+    devices = await BleakScanner.discover(timeout=20.0)
+    # pick the first that matches
+    target = next((d for d in devices if d.name and "BP2" in d.name), None)
+    if target is None:
+        raise RuntimeError("Scan timed out: no BP2 found within 20 seconds")
+    print("Connecting to", target.address)
+    await run(target.address)
 
+    
 if __name__ == "__main__":
     asyncio.run(main())
